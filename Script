@@ -1,0 +1,43 @@
+import os
+import shutil
+
+def organize_directory(directory):
+    # File type categories
+    file_types = {
+        "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"],
+        "Documents": [".pdf", ".docx", ".doc", ".txt", ".xlsx", ".pptx"],
+        "Music": [".mp3", ".wav", ".aac"],
+        "Videos": [".mp4", ".mov", ".avi"],
+        "Archives": [".zip", ".rar", ".7z"],
+        "Code": [".py", ".js", ".html", ".css", ".java", ".c", ".cpp"],
+        # Add more categories as needed
+    }
+    
+    # Make sure the specified directory exists
+    if not os.path.exists(directory):
+        print(f"The directory '{directory}' does not exist.")
+        return
+    
+    # Organize files
+    for file_name in os.listdir(directory):
+        file_path = os.path.join(directory, file_name)
+        
+        # Skip if it's a directory
+        if os.path.isdir(file_path):
+            continue
+        
+        # Find the appropriate folder for the file
+        file_ext = os.path.splitext(file_name)[1].lower()
+        moved = False
+        for folder, extensions in file_types.items():
+            if file_ext in extensions:
+                folder_path = os.path.join(directory, folder)
+                os.makedirs(folder_path, exist_ok=True)
+                shutil.move(file_path, os.path.join(folder_path, file_name))
+                moved = True
+                break
+        
+        # If file type is unknown, move to "Others" folder
+        if not moved:
+            others_folder = os.path.join(directory, "Others")
+            os.makedirs(others
